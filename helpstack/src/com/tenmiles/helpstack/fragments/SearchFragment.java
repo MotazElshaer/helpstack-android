@@ -22,10 +22,6 @@
 
 package com.tenmiles.helpstack.fragments;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import android.app.Activity;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
@@ -40,6 +36,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
+import android.widget.EditText;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ListView;
@@ -49,271 +46,277 @@ import com.tenmiles.helpstack.R;
 import com.tenmiles.helpstack.activities.HSActivityManager;
 import com.tenmiles.helpstack.model.HSKBItem;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Search Fragment
- * 
  */
 public class SearchFragment extends HSFragmentParent {
 
-	private View rootView;
-	private SearchAdapter searchAdapter;
-	private HSKBItem[] allKbArticles;
-	private ListView listView;
-	private SearchView searchView;
-	
-	private OnReportAnIssueClickListener articleSelecetedListener;
+    private View rootView;
+    private SearchAdapter searchAdapter;
+    private HSKBItem[] allKbArticles;
+    private ListView listView;
+    private SearchView searchView;
 
-	public SearchFragment() {
-		// Required empty public constructor
-	}
+    private OnReportAnIssueClickListener articleSelecetedListener;
 
-	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
-		// Inflate the layout for this fragment
-		rootView =  inflater.inflate(R.layout.hs_fragment_search, container, false);
-		setVisibility(false);
-		listView = (ListView)rootView.findViewById(R.id.searchList);
-		searchAdapter = new SearchAdapter(this.allKbArticles);
-		
-		View report_an_issue_view = inflater.inflate(R.layout.hs_expandable_footer_report_issue, null);
+    public SearchFragment() {
+        // Required empty public constructor
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        rootView = inflater.inflate(R.layout.hs_fragment_search, container, false);
+        setVisibility(false);
+        listView = (ListView) rootView.findViewById(R.id.searchList);
+        searchAdapter = new SearchAdapter(this.allKbArticles);
+
+        View report_an_issue_view = inflater.inflate(R.layout.hs_expandable_footer_report_issue, null);
         report_an_issue_view.findViewById(R.id.button1).setOnClickListener(reportIssueClickListener);
 
         listView.addFooterView(report_an_issue_view);
-		
-		listView.setAdapter(searchAdapter);
-		
-		listView.setOnItemClickListener(listItemClickListener);
-		
-		return rootView;
-	}
 
-	public void searchStarted() {
-		searchAdapter.refreshList(allKbArticles);
-		searchAdapter.getFilter().filter("");
-		searchAdapter.notifyDataSetChanged();
-	}
+        listView.setAdapter(searchAdapter);
 
-	public void doSearchForQuery(String q) {
-		searchAdapter.getFilter().filter(q);
-	}
+        listView.setOnItemClickListener(listItemClickListener);
 
-	public boolean isSearchVisible() {
-		if (rootView == null) {
-			return false;
-		}
-		return rootView.getVisibility() == View.VISIBLE;
-	}
-	
-	public void setVisibility(boolean visible) {
-		if (visible) {
-			rootView.setVisibility(View.VISIBLE);
-		}
-		else {
-			rootView.setVisibility(View.GONE);
-		}
-	}
-	
-	public void setKBArticleList(HSKBItem[] fetchedKbArticles) {
-		this.allKbArticles = fetchedKbArticles;
-		if (isSearchVisible()) {
-			searchAdapter.refreshList(allKbArticles);
-			searchAdapter.getFilter().filter("");
-			searchAdapter.notifyDataSetChanged();
-		}
-	}
-	
-	protected OnItemClickListener listItemClickListener = new OnItemClickListener() {
+        return rootView;
+    }
 
-		@Override
-		public void onItemClick(AdapterView<?> parent, View view,
-				int position, long id) {
-			HSKBItem kbItemClicked = (HSKBItem) searchAdapter.getItem(position);
-			articleClickedOnPosition(kbItemClicked);
-		}
-	};
-	
-	protected void articleClickedOnPosition(HSKBItem kbItemClicked) {
-		if(kbItemClicked.getArticleType() == HSKBItem.TYPE_ARTICLE) {
-			HSActivityManager.startArticleActivity(this, kbItemClicked, HomeFragment.REQUEST_CODE_NEW_TICKET);
-			
-		} else {
-			HSActivityManager.startSectionActivity(this, kbItemClicked, HomeFragment.REQUEST_CODE_NEW_TICKET);
-		}
-	}
-	
-	public void addSearchViewInMenuItem(Context context, MenuItem searchItem) {
-		MenuItemCompat.setShowAsAction(searchItem, MenuItemCompat.SHOW_AS_ACTION_ALWAYS|MenuItemCompat.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
-		
-		searchView = new SearchView(context);
-		MenuItemCompat.setActionView(searchItem, searchView);
-		searchView.setSubmitButtonEnabled(false);
+    public void searchStarted() {
+        searchAdapter.refreshList(allKbArticles);
+        searchAdapter.getFilter().filter("");
+        searchAdapter.notifyDataSetChanged();
+    }
 
-		searchView.setOnSearchClickListener(new OnClickListener() {
+    public void doSearchForQuery(String q) {
+        searchAdapter.getFilter().filter(q);
+    }
 
-			@Override
-			public void onClick(View v) {
-				searchStarted();
-			}
-		});
+    public boolean isSearchVisible() {
+        if (rootView == null) {
+            return false;
+        }
+        return rootView.getVisibility() == View.VISIBLE;
+    }
 
-		searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+    public void setVisibility(boolean visible) {
+        if (visible) {
+            rootView.setVisibility(View.VISIBLE);
+        } else {
+            rootView.setVisibility(View.GONE);
+        }
+    }
 
-			@Override
-			public boolean onQueryTextSubmit(String q) {
-				
-				doSearchForQuery(q);
-				
-				return true;
-			}
+    public void setKBArticleList(HSKBItem[] fetchedKbArticles) {
+        this.allKbArticles = fetchedKbArticles;
+        if (isSearchVisible()) {
+            searchAdapter.refreshList(allKbArticles);
+            searchAdapter.getFilter().filter("");
+            searchAdapter.notifyDataSetChanged();
+        }
+    }
 
-			@Override
-			public boolean onQueryTextChange(String newText) {
-				doSearchForQuery(newText);
-				return true;
-			}
-		});
+    protected OnItemClickListener listItemClickListener = new OnItemClickListener() {
+
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view,
+                                int position, long id) {
+            HSKBItem kbItemClicked = (HSKBItem) searchAdapter.getItem(position);
+            articleClickedOnPosition(kbItemClicked);
+        }
+    };
+
+    protected void articleClickedOnPosition(HSKBItem kbItemClicked) {
+        if (kbItemClicked.getArticleType() == HSKBItem.TYPE_ARTICLE) {
+            HSActivityManager.startArticleActivity(this, kbItemClicked, HomeFragment.REQUEST_CODE_NEW_TICKET);
+
+        } else {
+            HSActivityManager.startSectionActivity(this, kbItemClicked, HomeFragment.REQUEST_CODE_NEW_TICKET);
+        }
+    }
+
+    public void addSearchViewInMenuItem(Context context, MenuItem searchItem) {
+        MenuItemCompat.setShowAsAction(searchItem, MenuItemCompat.SHOW_AS_ACTION_ALWAYS | MenuItemCompat.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
+
+        searchView = new SearchView(context);
+        MenuItemCompat.setActionView(searchItem, searchView);
+        searchView.setSubmitButtonEnabled(false);
+
+        searchView.setOnSearchClickListener(new OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                searchStarted();
+            }
+        });
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+
+            @Override
+            public boolean onQueryTextSubmit(String q) {
+
+                doSearchForQuery(q);
+
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                doSearchForQuery(newText);
+                return true;
+            }
+        });
+
+//        int editTextId = searchView.getContext().getResources().getIdentifier("android:id/search_src_text", null, null);
+//        EditText textView = (EditText) searchView.findViewById(editTextId);
+//        if (textView != null)
+//            textView.setTextColor(getResources().getColor(R.color.search_bar_text_color));
 
 
-		MenuItemCompat.setOnActionExpandListener(searchItem, new OnActionExpandListener() {
+        MenuItemCompat.setOnActionExpandListener(searchItem, new OnActionExpandListener() {
 
-			@Override
-			public boolean onMenuItemActionExpand(MenuItem item) {
-				setVisibility(true);
-				return true;
-			}
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem item) {
+                setVisibility(true);
+                return true;
+            }
 
-			@Override
-			public boolean onMenuItemActionCollapse(MenuItem item) {
-				setVisibility(false);
-				return true;
-			}
-		});
-		
-		if (Build.VERSION.SDK_INT >= 14) {
-			searchView.setQueryHint(getString(R.string.hs_search_hint)); // Works on android 4.0 and above, but crashes in below version.
-		}
-		
-		
-	}
-	
-	private OnClickListener reportIssueClickListener = new OnClickListener() {
-		
-		@Override
-		public void onClick(View v) {
-			
-			if (articleSelecetedListener != null) {
-				articleSelecetedListener.startReportAnIssue();
-			}
-		}
-	};
-	
-	public void setOnReportAnIssueClickListener(OnReportAnIssueClickListener listener) {
-		this.articleSelecetedListener = listener;
-	}
-	
-	public interface OnReportAnIssueClickListener {
-		public void startReportAnIssue();
-	}
-	
-	private class SearchAdapter extends BaseAdapter implements Filterable{
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem item) {
+                setVisibility(false);
+                return true;
+            }
+        });
 
-		private HSKBItem[] allKBItems;
-		private HSKBItem[] searchResults;
-		private CustomFilter filter;
-		
-		public SearchAdapter(HSKBItem[] list) {
-			this.allKBItems = list;
-		}
-		
-		public void refreshList(HSKBItem[] list) {
-			this.allKBItems = list;
-		}
-		
-		@Override
-		public int getCount() {
-			if(searchResults == null) {
-				return 0;
-			}
-			return searchResults.length;
-		}
+        if (Build.VERSION.SDK_INT >= 14) {
+            searchView.setQueryHint(getString(R.string.hs_search_hint)); // Works on android 4.0 and above, but crashes in below version.
+        }
 
-		@Override
-		public Object getItem(int position) {
-			return searchResults[position];
-		}
 
-		@Override
-		public long getItemId(int position) {
-			return position;
-		}
+    }
 
-		@Override
-		public View getView(final int position, View convertView, ViewGroup parent) {
-			ViewHolder holder = null;
-			if(convertView == null){
-				LayoutInflater inflater = getActivity().getLayoutInflater();
-				convertView = inflater.inflate(R.layout.hs_sectionlist_article, null);
-				holder = new ViewHolder();
-				holder.textview = (TextView)convertView.findViewById(R.id.sectionlisttextview);
-				convertView.setTag(holder);
-			}else {
-				holder = (ViewHolder)convertView.getTag();
-			}
-			holder.textview.setText(((HSKBItem)this.searchResults[position]).getSubject());
-			return convertView;
-		}
-		
-		private class ViewHolder {
-			private TextView textview;
-		}
+    private OnClickListener reportIssueClickListener = new OnClickListener() {
 
-		@Override
-		public Filter getFilter() {
-			if(filter == null) {
-				filter = new CustomFilter();
-			}
-			return filter;
-		}
-		
-		private class CustomFilter extends Filter {
+        @Override
+        public void onClick(View v) {
 
-			@Override
-			protected FilterResults performFiltering(CharSequence constraint) {
-				FilterResults results = new FilterResults();
-				if(constraint == null || constraint.length() == 0){
-					
-					results.values = (HSKBItem[])allKBItems;
-					results.count = allKBItems.length;
-					
-				} else {
-					// We perform filtering operation
-			        List<HSKBItem> filterList = new ArrayList<HSKBItem>();
-			         
-			        for (HSKBItem p : allKBItems) {
-			            if (p.getSubject().toUpperCase().contains(constraint.toString().toUpperCase())) //.startsWith(constraint.toString().toUpperCase()))
-			            	filterList.add(p);
-			        }
-			        HSKBItem[] values = filterList.toArray(new HSKBItem[filterList.size()]);
-			        results.values = values;
-			        results.count = filterList.size();
-				}
-				return results;
-			}
+            if (articleSelecetedListener != null) {
+                articleSelecetedListener.startReportAnIssue();
+            }
+        }
+    };
 
-			@Override
-			protected void publishResults(CharSequence constraint,
-					FilterResults results) {
-				if(results == null) {
-					notifyDataSetInvalidated();
-				}else {
-					searchResults = (HSKBItem[]) results.values;
-					notifyDataSetChanged();
-				}
-				
-			}
-			
-		}
-		
-	}
+    public void setOnReportAnIssueClickListener(OnReportAnIssueClickListener listener) {
+        this.articleSelecetedListener = listener;
+    }
+
+    public interface OnReportAnIssueClickListener {
+        public void startReportAnIssue();
+    }
+
+    private class SearchAdapter extends BaseAdapter implements Filterable {
+
+        private HSKBItem[] allKBItems;
+        private HSKBItem[] searchResults;
+        private CustomFilter filter;
+
+        public SearchAdapter(HSKBItem[] list) {
+            this.allKBItems = list;
+        }
+
+        public void refreshList(HSKBItem[] list) {
+            this.allKBItems = list;
+        }
+
+        @Override
+        public int getCount() {
+            if (searchResults == null) {
+                return 0;
+            }
+            return searchResults.length;
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return searchResults[position];
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
+
+        @Override
+        public View getView(final int position, View convertView, ViewGroup parent) {
+            ViewHolder holder = null;
+            if (convertView == null) {
+                LayoutInflater inflater = getActivity().getLayoutInflater();
+                convertView = inflater.inflate(R.layout.hs_sectionlist_article, null);
+                holder = new ViewHolder();
+                holder.textview = (TextView) convertView.findViewById(R.id.sectionlisttextview);
+                convertView.setTag(holder);
+            } else {
+                holder = (ViewHolder) convertView.getTag();
+            }
+            holder.textview.setText(((HSKBItem) this.searchResults[position]).getSubject());
+            return convertView;
+        }
+
+        private class ViewHolder {
+            private TextView textview;
+        }
+
+        @Override
+        public Filter getFilter() {
+            if (filter == null) {
+                filter = new CustomFilter();
+            }
+            return filter;
+        }
+
+        private class CustomFilter extends Filter {
+
+            @Override
+            protected FilterResults performFiltering(CharSequence constraint) {
+                FilterResults results = new FilterResults();
+                if (constraint == null || constraint.length() == 0) {
+
+                    results.values = (HSKBItem[]) allKBItems;
+                    results.count = allKBItems.length;
+
+                } else {
+                    // We perform filtering operation
+                    List<HSKBItem> filterList = new ArrayList<HSKBItem>();
+
+                    for (HSKBItem p : allKBItems) {
+                        if (p.getSubject().toUpperCase().contains(constraint.toString().toUpperCase())) //.startsWith(constraint.toString().toUpperCase()))
+                            filterList.add(p);
+                    }
+                    HSKBItem[] values = filterList.toArray(new HSKBItem[filterList.size()]);
+                    results.values = values;
+                    results.count = filterList.size();
+                }
+                return results;
+            }
+
+            @Override
+            protected void publishResults(CharSequence constraint,
+                                          FilterResults results) {
+                if (results == null) {
+                    notifyDataSetInvalidated();
+                } else {
+                    searchResults = (HSKBItem[]) results.values;
+                    notifyDataSetChanged();
+                }
+
+            }
+
+        }
+
+    }
 }

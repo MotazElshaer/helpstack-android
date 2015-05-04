@@ -22,8 +22,6 @@
 
 package com.tenmiles.helpstack.fragments;
 
-import java.io.FileNotFoundException;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -61,6 +59,8 @@ import com.tenmiles.helpstack.model.HSAttachment;
 import com.tenmiles.helpstack.model.HSTicket;
 import com.tenmiles.helpstack.model.HSUser;
 
+import java.io.FileNotFoundException;
+
 public class NewIssueFragment extends HSFragmentParent {
 
     private final int REQUEST_CODE_PHOTO_PICKER = 100;
@@ -80,11 +80,10 @@ public class NewIssueFragment extends HSFragmentParent {
     HSAttachment selectedAttachment;
     HSSource gearSource;
 
-    public static NewIssueFragment createNewIssueFragment(HSUser user)
-    {
+    public static NewIssueFragment createNewIssueFragment(HSUser user) {
         NewIssueFragment frag = new NewIssueFragment();
 
-        if(user != null) {
+        if (user != null) {
             Bundle args = new Bundle();
             args.putSerializable(EXTRAS_USER, user);
             frag.setArguments(args);
@@ -185,7 +184,7 @@ public class NewIssueFragment extends HSFragmentParent {
         MenuItem doneMenu = menu.findItem(R.id.doneItem);
 
         if (gearSource.isNewUser()) {
-            doneMenu.setIcon(getResources().getDrawable(R.drawable.hs_action_forward));
+            doneMenu.setIcon(getResources().getDrawable(R.drawable.hs_action_forward_light_img));
             doneMenu.setTitle(getResources().getText(R.string.hs_next));
         }
 
@@ -198,7 +197,7 @@ public class NewIssueFragment extends HSFragmentParent {
         int id = item.getItemId();
         if (id == R.id.doneItem) {
 
-            if(getMessage().trim().length() == 0 || getSubject().trim().length() == 0) {
+            if (getMessage().trim().length() == 0 || getSubject().trim().length() == 0) {
                 HSUtils.showAlertDialog(getActivity(), getResources().getString(R.string.hs_error), getResources().getString(R.string.hs_error_subject_message_empty));
                 return false;
             }
@@ -212,7 +211,7 @@ public class NewIssueFragment extends HSFragmentParent {
 
             String formattedBody = getMessage();
 
-            if(!gearSource.isNewUser()) {
+            if (!gearSource.isNewUser()) {
                 getHelpStackActivity().setSupportProgressBarIndeterminateVisibility(true);
 
                 gearSource.createNewTicket("NEW_TICKET", userDetails, getSubject(), formattedBody, attachmentArray,
@@ -235,14 +234,12 @@ public class NewIssueFragment extends HSFragmentParent {
                                 getHelpStackActivity().setSupportProgressBarIndeterminateVisibility(false);
                             }
                         });
-            }
-            else {
+            } else {
                 HSActivityManager.startNewUserActivity(this, REQUEST_CODE_NEW_TICKET, getSubject(), formattedBody, attachmentArray);
             }
 
             return true;
-        }
-        else if(id == R.id.clearItem) {
+        } else if (id == R.id.clearItem) {
             clearFormData();
         }
 
@@ -253,17 +250,17 @@ public class NewIssueFragment extends HSFragmentParent {
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
 
-        switch(requestCode) {
+        switch (requestCode) {
             case REQUEST_CODE_PHOTO_PICKER:
-                if(resultCode == Activity.RESULT_OK){
+                if (resultCode == Activity.RESULT_OK) {
 
                     Uri selectedImage = Uri.parse(intent.getStringExtra("URI"));
 
                     //User had pick an image.
-                    Cursor cursor = getActivity().getContentResolver().query(selectedImage, new String[] {
+                    Cursor cursor = getActivity().getContentResolver().query(selectedImage, new String[]{
                             ImageColumns.DATA,
                             ImageColumns.DISPLAY_NAME,
-                            ImageColumns.MIME_TYPE }, null, null, null);
+                            ImageColumns.MIME_TYPE}, null, null, null);
                     cursor.moveToFirst();
 
                     String display_name = cursor.getString(cursor.getColumnIndex(ImageColumns.DISPLAY_NAME));
@@ -298,8 +295,7 @@ public class NewIssueFragment extends HSFragmentParent {
             if (selectedAttachment == null) {
                 Intent intent = new Intent(getActivity(), EditAttachmentActivity.class);
                 startActivityForResult(intent, REQUEST_CODE_PHOTO_PICKER);
-            }
-            else {
+            } else {
                 AlertDialog.Builder alertBuilder = new AlertDialog.Builder(getActivity());
                 alertBuilder.setTitle(getResources().getString(R.string.hs_attachment));
                 alertBuilder.setIcon(R.drawable.hs_attachment_img);
@@ -311,8 +307,7 @@ public class NewIssueFragment extends HSFragmentParent {
                         if (which == 0) {
                             Intent intent = new Intent(getActivity(), EditAttachmentActivity.class);
                             startActivityForResult(intent, REQUEST_CODE_PHOTO_PICKER);
-                        }
-                        else if (which == 1) {
+                        } else if (which == 1) {
                             selectedAttachment = null;
                             resetAttachmentImage();
                         }
@@ -327,8 +322,7 @@ public class NewIssueFragment extends HSFragmentParent {
     private void resetAttachmentImage() {
         if (selectedAttachment == null) {
             this.imageView1.setImageResource(R.drawable.hs_add_attachment_img);
-        }
-        else {
+        } else {
             try {
                 Uri uri = Uri.parse(selectedAttachment.getUrl());
                 Bitmap selectedBitmap;

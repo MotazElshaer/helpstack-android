@@ -5,7 +5,7 @@
 
     <item
         android:id="@+id/search"
-        android:icon="@drawable/hs_search_icon"
+        android:icon="@drawable/hs_search_img_light"
         android:showAsAction="collapseActionView|ifRoom"
         android:title="@string/hs_search"
         android:visible="true"/>
