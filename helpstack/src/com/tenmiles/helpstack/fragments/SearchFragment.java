@@ -155,6 +155,10 @@ public class SearchFragment extends HSFragmentParent {
             }
         });
 
+        EditText editText = (EditText) searchView.findViewById(R.id.search_src_text);
+        editText.setTextColor(getResources().getColor(R.color.search_bar_text_color));
+        editText.setHintTextColor(getResources().getColor(R.color.search_bar_text_color));
+
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
 
             @Override
@@ -171,11 +175,6 @@ public class SearchFragment extends HSFragmentParent {
                 return true;
             }
         });
-
-//        int editTextId = searchView.getContext().getResources().getIdentifier("android:id/search_src_text", null, null);
-//        EditText textView = (EditText) searchView.findViewById(editTextId);
-//        if (textView != null)
-//            textView.setTextColor(getResources().getColor(R.color.search_bar_text_color));
 
 
         MenuItemCompat.setOnActionExpandListener(searchItem, new OnActionExpandListener() {
