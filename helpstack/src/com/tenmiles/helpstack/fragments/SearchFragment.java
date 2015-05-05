@@ -158,6 +158,7 @@ public class SearchFragment extends HSFragmentParent {
         EditText editText = (EditText) searchView.findViewById(R.id.search_src_text);
         editText.setTextColor(getResources().getColor(R.color.search_bar_text_color));
         editText.setHintTextColor(getResources().getColor(R.color.search_bar_text_color));
+        editText.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.drawable.hs_search_img_light), null, null, null);
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
 

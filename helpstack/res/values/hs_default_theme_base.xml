@@ -4,7 +4,7 @@
     <!-- Default/Base Themes -->
     <!-- The base characteristics are defined in the default themes -->
 
-    <style name="HSAppBaseTheme" parent="android:Theme.Holo.Light.DarkActionBar"></style>
+    <style name="HSAppBaseTheme" parent="Theme.AppCompat"></style>
 
     <!-- Background default Style -->
     <style name="hs_background_defaultStyle">
