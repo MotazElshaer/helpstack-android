@@ -21,6 +21,6 @@
     <color name="hs_message_moreinfoTextColor">#000000</color>
     <color name="hs_button_background_color">#FFFFFF</color>
     <color name="hs_buttonTextcolor">#DE2527</color>
-    <color name="hs_editTextcolor">#000000</color>
+    <color name="hs_editTextcolor">#ffffff</color>
     <color name="search_bar_text_color">#ffffff</color>
 </resources>
