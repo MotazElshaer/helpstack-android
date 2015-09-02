@@ -5,6 +5,7 @@ dependencies {
     compile('com.android.support:appcompat-v7:20.0.0') {
         force = true
     }
+    compile 'com.google.code.gson:gson:2.2.4'
     compile 'org.apache.httpcomponents:httpmime:4.2.6'
 }
 
